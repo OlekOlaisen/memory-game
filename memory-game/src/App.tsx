@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState, useRef } from "react";
 import "./App.css";
 
@@ -122,6 +120,22 @@ export default function MemoryGame() {
       if (flipTimeoutRef.current) clearTimeout(flipTimeoutRef.current);
     };
   }, [flippedCards]);
+
+
+  // Håndterer bekreftelsesdialog for å forhindre lukking av siden
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (isGameActive) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isGameActive]);
 
   // Håndterer klikk på et kort. Snur det om ikke allerede snudd eller matchet
   function handleCardClick(selectedCard: Card) {
